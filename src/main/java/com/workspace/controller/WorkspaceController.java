@@ -41,7 +41,7 @@ public class WorkspaceController {
     		fortunesdict.put(datfile, new ArrayList<String>());
     		try {
 	    		InputStream is = new ClassPathResource("datfiles/" + datfile).getInputStream();
-	    		Scanner inscanner = new Scanner(is).useDelimiter("%\\n");
+	    		Scanner inscanner = new Scanner(is).useDelimiter("\\n%\\n");
 	    		while (inscanner.hasNext()) {
 	    			String token = inscanner.next();
 	    			fortunesdict.get(datfile).add(token);
