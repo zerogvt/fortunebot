@@ -30,7 +30,7 @@ public class WorkspaceController {
 	protected static final Logger LOGGER = LoggerFactory.getLogger(WorkspaceController.class);
 	private ArrayList<String> fortunes = null;
     private Random random = new Random();
-    private String[] datfiles = {"art", "computers", "definitions", "education", "food", "kids", "humorists", "linux",
+    private String[] datfiles = {"art", "ascii-art", "computers", "definitions", "education", "food", "kids", "humorists", "linux",
     		"linuxcookie", "literature", "love", "magic", "medicine", "men-women", "news", "paradoxum", "people", "pets",
     		"platitudes", "riddles", "science", "sports", "startrek", "wisdom", "work", "zippy"};
     
@@ -76,8 +76,11 @@ public class WorkspaceController {
         if(!workspaceProperties.getAppId().equals(webhookEvent.getUserId())) {
             // respond to webhook
         	String in = webhookEvent.getContent();
+        	String fortune = getRandomFortune();
         	if (in.startsWith("@fortunebot")) {
-        		String fortune = getRandomFortune();
+        		if (in.contains("categories")) {
+        			fortune = getCategories();
+        		}
         		workspaceService.createMessage(webhookEvent.getSpaceId(), buildMessage("FortuneBot", fortune));
         	}
         }
@@ -99,5 +102,13 @@ public class WorkspaceController {
     	}
     	int randomIndex = this.random.nextInt(this.fortunes.size());
     	return fortunes.get(randomIndex);
+    }
+    
+    private String getCategories(){
+    	String ret = "";
+    	for (int i = 0; i < datfiles.length; i++) {
+    		ret += datfiles[i] + "\n";
+    	}
+    	return ret;
     }
 }
