@@ -33,16 +33,18 @@ public class WorkspaceController {
     private String[] datfiles = {"art", "ascii-art", "computers", "definitions", "education", "food", "kids", "humorists", "linux",
     		"linuxcookie", "literature", "love", "magic", "medicine", "men-women", "news", "paradoxum", "people", "pets",
     		"platitudes", "riddles", "science", "sports", "startrek", "wisdom", "work", "zippy"};
+    private HashMap<String, ArrayList<String>> fortunesdict = null;
     
     private void InitFortunes(){
-    	this.fortunes = new ArrayList<String>();
+    	this.fortunesdict = new HashMap<String, ArrayList<String>>();
     	for (String datfile : datfiles) {
+    		fortunesdict.put(datfile, new ArrayList<String>());
     		try {
 	    		InputStream is = new ClassPathResource("datfiles/" + datfile).getInputStream();
 	    		Scanner inscanner = new Scanner(is).useDelimiter("%");
 	    		while (inscanner.hasNext()) {
 	    			String token = inscanner.next();
-	    			fortunes.add(token);
+	    			fortunesdict.get(datfile).add(token);
 	    		}
 	    		inscanner.close();
 	    	} catch (Exception e) {
@@ -64,7 +66,7 @@ public class WorkspaceController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public String home(){
-        return getRandomFortune();
+        return getRandomFortune(null);
     }
 
     @RequestMapping(value = "webhook", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -76,13 +78,19 @@ public class WorkspaceController {
         if(!workspaceProperties.getAppId().equals(webhookEvent.getUserId())) {
             // respond to webhook
         	String in = webhookEvent.getContent();
-        	String fortune = getRandomFortune();
-        	if (in.startsWith("@fortunebot")) {
-        		if (in.contains("categories")) {
-        			fortune = getCategories();
-        		}
-        		workspaceService.createMessage(webhookEvent.getSpaceId(), buildMessage("FortuneBot", fortune));
+        	if (!in.startsWith("@fortunebot")) {
+        		return ResponseEntity.ok().build();
         	}
+            String fortune = getRandomFortune(null);
+        	if (in.contains(" categories")) {
+        		fortune = getCategories();
+        	}
+        	for (int i = 0; i < datfiles.length; i++) {
+        		if (in.contains(datfiles[i])) {
+        			fortune = getRandomFortune(datfiles[i]);
+        		}
+        	}
+        	workspaceService.createMessage(webhookEvent.getSpaceId(), buildMessage("FortuneBot", fortune));	
         }
         return ResponseEntity.ok().build();
     }
@@ -96,18 +104,26 @@ public class WorkspaceController {
                 .body(responseBody);
     }
 
-    private String getRandomFortune(){
-    	if (this.fortunes == null) {
+    private String getRandomFortune(String category){
+    	if (this.fortunesdict == null) {
     		this.InitFortunes();
     	}
-    	int randomIndex = this.random.nextInt(this.fortunes.size());
-    	return fortunes.get(randomIndex);
+    	ArrayList<String> target = null;
+    	if (category != null) {
+    		target = fortunesdict.get(category);
+    	} 
+    	else {
+    		List<String> keys = new ArrayList<String>(fortunesdict.keySet());
+    		String rkey = datfiles[random.nextInt(keys.size())];
+    		target = fortunesdict.get(rkey);
+    	}
+    	return target.get(random.nextInt(target.size()));
     }
     
     private String getCategories(){
     	String ret = "";
     	for (int i = 0; i < datfiles.length; i++) {
-    		ret += datfiles[i] + "\n";
+    		ret += datfiles[i] + " ";
     	}
     	return ret;
     }
