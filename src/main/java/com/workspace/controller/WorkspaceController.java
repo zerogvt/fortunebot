@@ -85,6 +85,9 @@ public class WorkspaceController {
         	if (in.contains(" categories")) {
         		fortune = getCategories();
         	}
+        	if (in.contains(" -h") || in.contains(" help")) {
+        		fortune = getHelpString();
+        	}
         	for (int i = 0; i < datfiles.length; i++) {
         		if (in.contains(datfiles[i])) {
         			fortune = getRandomFortune(datfiles[i]);
@@ -126,5 +129,9 @@ public class WorkspaceController {
     		ret += datfiles[i] + " ";
     	}
     	return ret;
+    }
+    
+    private String getHelpString(){
+    	return "Usage:\n @fortunebot [-h] [help] [categories] <category>";
     }
 }
