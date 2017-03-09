@@ -81,16 +81,24 @@ public class WorkspaceController {
         	if (!in.startsWith("@fortunebot")) {
         		return ResponseEntity.ok().build();
         	}
+        	String arg = in.replaceAll("@fortunebot", "").trim();
             String fortune = getRandomFortune(null);
-        	if (in.contains(" categories")) {
+        	if (arg.contains(" categories")) {
         		fortune = getCategories();
         	}
-        	if (in.contains(" -h") || in.contains(" help")) {
+        	if (arg.contains(" -h") || arg.contains(" help")) {
         		fortune = getHelpString();
         	}
-        	for (int i = 0; i < datfiles.length; i++) {
-        		if (in.contains(datfiles[i])) {
-        			fortune = getRandomFortune(datfiles[i]);
+        	if (!arg.isEmpty()) {
+        		boolean gotit = false;
+        		for (int i = 0; i < datfiles.length; i++) {
+        			if (arg.contains(datfiles[i])) {
+        				fortune = getRandomFortune(datfiles[i]);
+        				gotit = true;
+        			}
+        		}
+        		if (!gotit) {
+        			fortune = getRandomFortuneWToken(arg);
         		}
         	}
         	workspaceService.createMessage(webhookEvent.getSpaceId(), buildMessage("FortuneBot", fortune));	
@@ -120,8 +128,23 @@ public class WorkspaceController {
     		String rkey = datfiles[random.nextInt(keys.size())];
     		target = fortunesdict.get(rkey);
     	}
-    	return target.get(random.nextInt(target.size()));
+    	String fortune = target.get(random.nextInt(target.size()));
+    	return fortune;
     }
+    
+    private String getRandomFortuneWToken(String token){
+    	List<String> keys = new ArrayList<String>(fortunesdict.keySet());
+		String rkey = datfiles[random.nextInt(keys.size())];
+		ArrayList<String> target = fortunesdict.get(rkey);
+		for (int i=0, j=random.nextInt(target.size()); i<target.size(); i++, j++) {
+			int index = j % target.size();
+			if (target.get(index).contains(token)) {
+				return target.get(index);
+			}
+		}
+		return target.get(random.nextInt(target.size()));
+    }
+
     
     private String getCategories(){
     	String ret = "";
