@@ -34,7 +34,7 @@ public class WorkspaceController {
     		"linuxcookie", "literature", "love", "magic", "medicine", "men-women", "news", "paradoxum", "people", "pets",
     		"platitudes", "riddles", "science", "sports", "startrek", "wisdom", "work", "zippy"};
     private HashMap<String, ArrayList<String>> fortunesdict = null;
-    private int MAX_LEN = 400;
+    private int MAX_LEN = 300;
     
     private void InitFortunes(){
     	this.fortunesdict = new HashMap<String, ArrayList<String>>();
