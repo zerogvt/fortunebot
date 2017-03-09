@@ -146,6 +146,12 @@ public class WorkspaceController {
     
     private String parseAndReply(String in) {
 		String arg = in.replaceAll("@fortunebot", "").trim();
+		if (arg.contains(" -categories")) {
+			return getCategories();
+		}
+		if (arg.contains(" -help")) {
+			return getHelpString();
+		}
 		if (!arg.isEmpty()) {
 			for (int i = 0; i < datfiles.length; i++) {
 				if (arg.contains(datfiles[i])) {
@@ -153,12 +159,6 @@ public class WorkspaceController {
 				}
 			}
 			return getRandomFortuneWToken(" " + arg +" ");
-		}
-		if (arg.contains(" -categories")) {
-			return getCategories();
-		}
-		if (arg.contains(" -help")) {
-			return getHelpString();
 		}
 		return getRandomFortune(null);
     }
