@@ -134,15 +134,18 @@ public class WorkspaceController {
     
     private String getRandomFortuneWToken(String token){
     	List<String> keys = new ArrayList<String>(fortunesdict.keySet());
-		String rkey = datfiles[random.nextInt(keys.size())];
-		ArrayList<String> target = fortunesdict.get(rkey);
-		for (int i=0, j=random.nextInt(target.size()); i<target.size(); i++, j++) {
-			int index = j % target.size();
-			if (target.get(index).contains(token)) {
-				return target.get(index);
+		for (int q=0, k=random.nextInt(keys.size()); q<keys.size(); q++, k++) {
+			int keyndex = k % keys.size();
+			String rkey = datfiles[keyndex];
+			ArrayList<String> target = fortunesdict.get(rkey);
+			for (int i=0, j=random.nextInt(target.size()); i<target.size(); i++, j++) {
+				int index = j % target.size();
+				if (target.get(index).contains(token)) {
+					return target.get(index);
+				}
 			}
 		}
-		return target.get(random.nextInt(target.size()));
+		return getRandomFortune(null);
     }
 
     
