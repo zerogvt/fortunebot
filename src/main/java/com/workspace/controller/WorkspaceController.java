@@ -36,6 +36,10 @@ public class WorkspaceController {
     private HashMap<String, ArrayList<String>> fortunesdict = null;
     private int MAX_LEN = 250;
     
+    private WorkspaceController(){
+    	InitFortunes();
+    }
+    
     private void InitFortunes(){
     	this.fortunesdict = new HashMap<String, ArrayList<String>>();
     	for (String datfile : datfiles) {
