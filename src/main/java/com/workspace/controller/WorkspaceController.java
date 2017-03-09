@@ -98,7 +98,7 @@ public class WorkspaceController {
         			}
         		}
         		if (!gotit) {
-        			fortune = getRandomFortuneWToken(arg);
+        			fortune = getRandomFortuneWToken(" " + arg +" ");
         		}
         	}
         	workspaceService.createMessage(webhookEvent.getSpaceId(), buildMessage("FortuneBot", fortune));	
