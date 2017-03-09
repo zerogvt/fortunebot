@@ -79,29 +79,10 @@ public class WorkspaceController {
         if(!workspaceProperties.getAppId().equals(webhookEvent.getUserId())) {
             // respond to webhook
         	String in = webhookEvent.getContent();
-        	if (!in.startsWith("@fortunebot")) {
-        		return ResponseEntity.ok().build();
-        	}
-        	String arg = in.replaceAll("@fortunebot", "").trim();
-            String fortune = getRandomFortune(null);
-        	if (!arg.isEmpty()) {
-        		boolean gotit = false;
-        		for (int i = 0; i < datfiles.length; i++) {
-        			if (arg.contains(datfiles[i])) {
-        				fortune = getRandomFortune(datfiles[i]);
-        				gotit = true;
-        			}
-        		}
-        		if (!gotit) {
-        			fortune = getRandomFortuneWToken(" " + arg +" ");
-        		}
-        	}
-        	if (arg.contains(" categories")) {
-        		fortune = getCategories();
-        	}
-        	if (arg.contains(" -h") || arg.contains(" help")) {
-        		fortune = getHelpString();
-        	}
+    		if (!in.startsWith("@fortunebot")) {
+    			return ResponseEntity.ok().build();
+    		}
+        	String fortune = parseAndReply( in );
         	workspaceService.createMessage(webhookEvent.getSpaceId(), buildMessage("FortuneBot", fortune));	
         }
         return ResponseEntity.ok().build();
@@ -160,6 +141,25 @@ public class WorkspaceController {
     }
     
     private String getHelpString(){
-    	return "Usage:\n @fortunebot [-h] [help] [categories] <category>";
+    	return "Usage:\n @fortunebot [-help] [-categories] <category> <word>";
+    }
+    
+    private String parseAndReply(String in) {
+		String arg = in.replaceAll("@fortunebot", "").trim();
+		if (!arg.isEmpty()) {
+			for (int i = 0; i < datfiles.length; i++) {
+				if (arg.contains(datfiles[i])) {
+					return getRandomFortune(datfiles[i]);
+				}
+			}
+			return getRandomFortuneWToken(" " + arg +" ");
+		}
+		if (arg.contains(" -categories")) {
+			return getCategories();
+		}
+		if (arg.contains(" -help")) {
+			return getHelpString();
+		}
+		return getRandomFortune(null);
     }
 }
