@@ -84,12 +84,6 @@ public class WorkspaceController {
         	}
         	String arg = in.replaceAll("@fortunebot", "").trim();
             String fortune = getRandomFortune(null);
-        	if (arg.contains(" categories")) {
-        		fortune = getCategories();
-        	}
-        	if (arg.contains(" -h") || arg.contains(" help")) {
-        		fortune = getHelpString();
-        	}
         	if (!arg.isEmpty()) {
         		boolean gotit = false;
         		for (int i = 0; i < datfiles.length; i++) {
@@ -101,6 +95,12 @@ public class WorkspaceController {
         		if (!gotit) {
         			fortune = getRandomFortuneWToken(" " + arg +" ");
         		}
+        	}
+        	if (arg.contains(" categories")) {
+        		fortune = getCategories();
+        	}
+        	if (arg.contains(" -h") || arg.contains(" help")) {
+        		fortune = getHelpString();
         	}
         	workspaceService.createMessage(webhookEvent.getSpaceId(), buildMessage("FortuneBot", fortune));	
         }
