@@ -150,10 +150,10 @@ public class WorkspaceController {
     
     private String parseAndReply(String in) {
 		String arg = in.replaceAll("@fortunebot", "").trim();
-		if (arg.contains(" -categories")) {
+		if (arg.contains("-categories")) {
 			return getCategories();
 		}
-		if (arg.contains(" -help")) {
+		if (arg.contains("-help")) {
 			return getHelpString();
 		}
 		if (!arg.isEmpty()) {
