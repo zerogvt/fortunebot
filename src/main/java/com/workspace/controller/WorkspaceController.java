@@ -34,7 +34,7 @@ public class WorkspaceController {
     		"linuxcookie", "literature", "love", "magic", "medicine", "men-women", "news", "paradoxum", "people", "pets",
     		"platitudes", "riddles", "science", "sports", "startrek", "wisdom", "work", "zippy"};
     private HashMap<String, ArrayList<String>> fortunesdict = null;
-    private int MAX_LEN = 300;
+    private int MAX_LEN = 250;
     
     private void InitFortunes(){
     	this.fortunesdict = new HashMap<String, ArrayList<String>>();
@@ -142,7 +142,7 @@ public class WorkspaceController {
 			for (int i=0, j=random.nextInt(target.size()); i<target.size(); i++, j++) {
 				int index = j % target.size();
 				String fortune = target.get(index);
-				if (fortune.contains(token) && fortune.length() < MAX_LEN) {
+				if (fortune.length() < MAX_LEN && fortune.contains(token)) {
 					return target.get(index);
 				}
 			}
