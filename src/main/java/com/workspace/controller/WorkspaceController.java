@@ -145,7 +145,7 @@ public class WorkspaceController {
     }
     
     private String getHelpString(){
-    	return "Usage:\n @fortunebot [-help] [-categories] <category> <word>";
+    	return "Usage:\n @fortunebot [-help] [-categories] <:category> <word>";
     }
     
     private String parseAndReply(String in) {
@@ -157,9 +157,11 @@ public class WorkspaceController {
 			return getHelpString();
 		}
 		if (!arg.isEmpty()) {
-			for (int i = 0; i < datfiles.length; i++) {
-				if (arg.contains(datfiles[i])) {
-					return getRandomFortune(datfiles[i]);
+			if (arg.contains(":")){
+				for (int i = 0; i < datfiles.length; i++) {
+					if (arg.contains(datfiles[i])) {
+						return getRandomFortune(datfiles[i]);
+					}
 				}
 			}
 			return getRandomFortuneWToken(" " + arg +" ");
